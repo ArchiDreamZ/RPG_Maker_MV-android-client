@@ -57,7 +57,6 @@ public class WebPlayerView extends WebView {
         init(context);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public WebPlayerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
@@ -73,25 +72,16 @@ public class WebPlayerView extends WebView {
         WebSettings webSettings = getSettings();
         webSettings.setAllowContentAccess(true);
         webSettings.setAllowFileAccess(true);
-        webSettings.setAppCacheEnabled(true);
+        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setDatabaseEnabled(true);
-        webSettings.setDatabasePath(context.getDir("database", Context.MODE_PRIVATE).getPath());
         webSettings.setDomStorageEnabled(true);
         webSettings.setLoadsImagesAutomatically(true);
         webSettings.setSupportMultipleWindows(true);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            webSettings.setAllowFileAccessFromFileURLs(true);
-            webSettings.setAllowUniversalAccessFromFileURLs(true);
+        webSettings.setAllowFileAccessFromFileURLs(true);
+        webSettings.setAllowUniversalAccessFromFileURLs(true);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                webSettings.setMediaPlaybackRequiresUserGesture(false);
-            }
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);
-        }
+        webSettings.setMediaPlaybackRequiresUserGesture(false);
 
         setWebChromeClient(new ChromeClient());
         setWebViewClient(new ViewClient());
@@ -154,7 +144,7 @@ public class WebPlayerView extends WebView {
     /**
      *
      */
-    private class ViewClient extends WebViewClient {
+    private static class ViewClient extends WebViewClient {
 
         @Override
         @TargetApi(Build.VERSION_CODES.M)
@@ -163,7 +153,6 @@ public class WebPlayerView extends WebView {
             view.setBackgroundColor(Color.WHITE);
         }
 
-        @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             view.setBackgroundColor(Color.WHITE);
@@ -176,7 +165,7 @@ public class WebPlayerView extends WebView {
      */
     private static final class WebPlayer implements Player {
 
-        private WebPlayerView mWebView;
+        private final WebPlayerView mWebView;
 
         private WebPlayer(WebPlayerView webView) {
             mWebView = webView;
@@ -215,11 +204,7 @@ public class WebPlayerView extends WebView {
 
         @Override
         public void evaluateJavascript(String script) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                mWebView.evaluateJavascript(script, null);
-            } else {
-                mWebView.loadUrl("javascript:" + script);
-            }
+            mWebView.evaluateJavascript(script, null);
         }
 
         @Override

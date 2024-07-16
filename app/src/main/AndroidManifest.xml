@@ -21,13 +21,13 @@
         android:icon="@mipmap/app_icon"
         android:roundIcon="@mipmap/app_icon_round"
         android:theme="@style/AppTheme"
-        android:allowBackup="true"
-        android:fullBackupContent="true">
+        android:allowBackup="true">
 
         <activity
             android:name=".WebPlayerActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="sensorLandscape"
+            android:dataExtractionRules="@xml/data_extraction_rules"
+            android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

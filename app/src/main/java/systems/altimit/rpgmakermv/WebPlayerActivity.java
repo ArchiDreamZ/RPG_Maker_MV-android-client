@@ -19,7 +19,7 @@ package systems.altimit.rpgmakermv;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,7 +28,7 @@ import android.util.Base64;
 import android.view.View;
 
 import java.io.File;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by felixjones on 28/04/2017.
@@ -45,6 +45,8 @@ public class WebPlayerActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE);
+
         if (BuildConfig.BACK_BUTTON_QUITS) {
             createQuitDialog();
         }
@@ -143,24 +145,9 @@ public class WebPlayerActivity extends Activity {
 
         if (quitMessage.length() > 0) {
             mQuitDialog = new AlertDialog.Builder(this)
-                    .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            getWindow().getDecorView().setSystemUiVisibility(mSystemUiVisibility);
-                        }
-                    })
-                    .setNegativeButton("Quit", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            WebPlayerActivity.super.onBackPressed();
-                        }
-                    })
+                    .setPositiveButton("Cancel", (dialog, which) -> dialog.dismiss())
+                    .setOnDismissListener(dialog -> getWindow().getDecorView().setSystemUiVisibility(mSystemUiVisibility))
+                    .setNegativeButton("Quit", (dialog, which) -> WebPlayerActivity.super.onBackPressed())
                     .setMessage(quitMessage.toString())
                     .create();
         }
@@ -183,7 +170,7 @@ public class WebPlayerActivity extends Activity {
         private static Uri.Builder appendQuery(Uri.Builder builder, String query) {
             Uri current = builder.build();
             String oldQuery = current.getEncodedQuery();
-            if (oldQuery != null && oldQuery.length() > 0) {
+            if (oldQuery != null && !oldQuery.isEmpty()) {
                 query = oldQuery + "&" + query;
             }
             return builder.encodedQuery(query);
@@ -192,7 +179,7 @@ public class WebPlayerActivity extends Activity {
         private static final String INTERFACE = "boot";
         private static final String PREPARE_FUNC = "prepare( webgl(), webaudio(), false )";
 
-        private Player mPlayer;
+        private final Player mPlayer;
         private Uri.Builder mURIBuilder;
 
         private Bootstrapper(Player player) {
@@ -207,13 +194,8 @@ public class WebPlayerActivity extends Activity {
         @Override
         protected void onStart() {
             Context context = mPlayer.getContext();
-            final String code = new String(Base64.decode(context.getString(R.string.webview_detection_source), Base64.DEFAULT), Charset.forName("UTF-8")) + INTERFACE + "." + PREPARE_FUNC + ";";
-            mPlayer.post(new Runnable() {
-                @Override
-                public void run() {
-                    mPlayer.evaluateJavascript(code);
-                }
-            });
+            final String code = new String(Base64.decode(context.getString(R.string.webview_detection_source), Base64.DEFAULT), StandardCharsets.UTF_8) + INTERFACE + "." + PREPARE_FUNC + ";";
+            mPlayer.post(() -> mPlayer.evaluateJavascript(code));
         }
 
         @Override
