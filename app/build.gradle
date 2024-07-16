@@ -69,6 +69,7 @@ android {
             buildConfigField "boolean", "BOOTSTRAP_INTERFACE", "true"
         }
     }
+    namespace 'systems.altimit.rpgmakermv'
 }
 
 dependencies {
