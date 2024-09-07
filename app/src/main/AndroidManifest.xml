@@ -1,43 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-   Copyright (c) 2017-2018 Altimit Community Contributors
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
--->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <!-- 控制振动 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- 运行前台服务 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- 防止手机休眠 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- 查看网络连接 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 查看WLAN连接 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 拥有完全的网络访问权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 读取您共享存储空间中的内容 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- 从共享存储空间读取视频文件 -->
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <!-- 从共享存储空间读取音频文件-->
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <!-- 读取共享存储空间中的图片文件 -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <!-- 修改或删除您共享存储空间中的内容 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:label="@string/app_name"
         android:icon="@mipmap/app_icon"
         android:roundIcon="@mipmap/app_icon_round"
         android:theme="@style/AppTheme"
-        android:allowBackup="true">
+        android:allowBackup="true"
+        android:hardwareAccelerated="true">
 
         <activity
             android:name=".WebPlayerActivity"
+            android:windowLayoutInDisplayCutoutMode="shortEdges"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:dataExtractionRules="@xml/data_extraction_rules"
             android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/app_scheme"
                     android:host="@string/app_host" />

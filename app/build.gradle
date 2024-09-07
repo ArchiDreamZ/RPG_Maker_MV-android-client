@@ -1,83 +1,49 @@
-/*
- * Copyright (c) 2017-2019 Altimit Community Contributors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or imp
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 apply plugin: 'com.android.application'
 
 android {
-
     /**
-     * Advanced Configuration
+     * 高级配置
      */
-    def BACK_BUTTON_QUITS   = true // Use back button to quit the app?
-    def SHOW_FPS            = false // Display the FPS monitor?
-    def FORCE_CANVAS        = false // Disables fast WebGL rendering when available
-    def FORCE_NO_AUDIO      = false // Disables WebAudio
+    def BACK_BUTTON_QUITS = true // 使用后退按钮退出应用程序？
+    def SHOW_FPS = false // 显示 FPS 监视器?
+    def FORCE_CANVAS = false // 禁用快速 WebGL 渲染（如果可用）
+    def FORCE_NO_AUDIO = false // 禁用网络音
+    
+    namespace 'jp.hbox.ImoutoFantasy'// 定义命名空间
+    buildFeatures {buildConfig true} //生成包含构建配置信息的 BuildConfig 类
 
-    // Android 9+ "Q" API 29
-    def ANDROID_SDK_TARGET  = 34
+    // Android 14+ "U" API 34
+    def ANDROID_SDK_TARGET = 34
 
     defaultConfig {
-
         /**
-         * Project Identification
+         * 项目识别
          */
-        applicationId "id.application.rpgmakermv" // Change this to your applicationId.
-        versionCode 1 // Set this to a higher number for game updates.
-        versionName "1.0" // This is the version that the player sees.
-
+        applicationId "jp.hbox.ImoutoFantasy" // 将其更改为您的应用id。
+        versionCode 1 // 将其设置为更高的数字以进行游戏更新.
+        versionName "1.2.0" // 这是玩家看到的版本。
+        minSdkVersion 21//最低SDK版本
         compileSdk ANDROID_SDK_TARGET
         targetSdkVersion ANDROID_SDK_TARGET
+        buildConfigField "boolean", "BOOTSTRAP_INTERFACE", "true"
     }
-
     buildTypes {
-        buildTypes.each { buildType ->
-            buildType.buildConfigField "boolean",  "BACK_BUTTON_QUITS", String.valueOf(BACK_BUTTON_QUITS)
-            buildType.buildConfigField "boolean",  "SHOW_FPS",          String.valueOf(SHOW_FPS)
-            buildType.buildConfigField "boolean",  "FORCE_CANVAS",      String.valueOf(FORCE_CANVAS)
-            buildType.buildConfigField "boolean",  "FORCE_NO_AUDIO",    String.valueOf(FORCE_NO_AUDIO)
+        release {
+            minifyEnabled true// R8代码混淆
+            shrinkResources true// 启用资源缩减，去除未使用的资源文件
+            // 指定混淆规则文件
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rides.pro'
         }
-    }
-
-    flavorDimensions += "mv_android_client"
-    productFlavors {
-        webview {
-            dimension "mv_android_client"
-            minSdkVersion 21
-
-            buildConfigField "boolean", "BOOTSTRAP_INTERFACE", "true"
-        }
-
-        // WARNING: As of February 2017 Crosswalk is no longer maintained https://crosswalk-project.org/blog/crosswalk-final-release.html
-        zz_crosswalk {
-            dimension "mv_android_client"
-            minSdkVersion 21
-
-            buildConfigField "boolean", "BOOTSTRAP_INTERFACE", "true"
-        }
-    }
-    namespace 'systems.altimit.rpgmakermv'
-    buildFeatures {
-        buildConfig true
+    }  
+    buildTypes.each { buildType ->
+        buildType.buildConfigField "boolean", "BACK_BUTTON_QUITS", String.valueOf(BACK_BUTTON_QUITS)
+        buildType.buildConfigField "boolean", "SHOW_FPS", String.valueOf(SHOW_FPS)
+        buildType.buildConfigField "boolean", "FORCE_CANVAS", String.valueOf(FORCE_CANVAS)
+        buildType.buildConfigField "boolean", "FORCE_NO_AUDIO", String.valueOf(FORCE_NO_AUDIO)
     }
 }
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22"))
-
-    zz_crosswalkImplementation 'org.xwalk:xwalk_core_library:23.53.589.4'
+    implementation(platform('org.jetbrains.kotlin:kotlin-bom:2.0.20'))
 }

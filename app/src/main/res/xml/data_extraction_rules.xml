@@ -1,15 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-   Sample data extraction rules file; uncomment and customize as necessary.
-   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
-   for details.
+<?xml version="1.0" encoding="utf-8"?><!--
+   样本数据提取规则文件；取消注释并根据需要进行自定义。
+   请参阅 https://developer.android.com/about/versions/12/backup-restore#xml-changes
+   了解详情。
 -->
 <data-extraction-rules>
     <cloud-backup>
         <!--
-        TODO: Use <include> and <exclude> to control what is backed up.
-        The domain can be file, database, sharedpref, external or root.
-        Examples:
+        TODO：使用 <include> 和 <exclude> 来控制备份的内容。
+        域可以是文件、数据库、sharedpref、外部或根。
+        示例：
 
         <include domain="file" path="file_to_include"/>
         <exclude domain="file" path="file_to_exclude"/>
@@ -32,5 +31,5 @@
         <include .../>
         <exclude .../>
     </device-transfer>
-    -->
+     -->
 </data-extraction-rules>

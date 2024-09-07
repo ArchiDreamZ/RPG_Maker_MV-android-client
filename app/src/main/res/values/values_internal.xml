@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
    Copyright (c) 2017-2018 Altimit Community Contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,9 +41,21 @@
     </string>
 
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimary">@color/color_primary_dark</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
 
+    <!-- 退出提醒主题颜色设置 -->
+    <style name="CustomAlertDialogStyle" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <!-- 设置背景颜色为白色 -->
+        <item name="android:background">@android:color/white</item>
+        <!-- 设置文本颜色为黑色 -->
+        <item name="android:textColor">@android:color/black</item>
+        <!-- 设置标题文本颜色为黑色（如果需要） -->
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <!-- 设置按钮文本颜色为黑色（如果需要） -->
+        <item name="android:textColorSecondary">@android:color/black</item>
+    </style>
 </resources>
