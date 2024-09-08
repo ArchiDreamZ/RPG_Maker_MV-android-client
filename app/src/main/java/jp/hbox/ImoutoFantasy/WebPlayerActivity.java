@@ -21,17 +21,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.util.Base64;
 import android.view.View;
-
+import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
-
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 
@@ -153,29 +152,35 @@ public class WebPlayerActivity extends Activity {
         String appName = getString(R.string.app_name);
         String[] quitLines = getResources().getStringArray(R.array.quit_message);
         SpannableStringBuilder quitMessage = new SpannableStringBuilder();
+
         for (int ii = 0; ii < quitLines.length; ii++) {
             String line = quitLines[ii].replace("$1", appName);
-            int startIndex = line.indexOf(appName);
-            if (startIndex != -1) {
-                int endIndex = startIndex + appName.length();
-                quitMessage.append(line);
-
-                // $1 的字体颜色设置 (Color.BLUE)为蓝色，可更换喜欢的颜色。
-                quitMessage.setSpan(new ForegroundColorSpan(Color.BLUE), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            } else {
-                quitMessage.append(line);
-            }
+            quitMessage.append(line);
             if (ii < quitLines.length - 1) {
                 quitMessage.append("\n");
             }
         }
+        //用于在对话框中显示带有渐变色的应用名称
+        TextView textView = new TextView(this);
+        textView.setText(quitMessage);
+        textView.setTextSize(16); // 可以根据需求调整字体大小
+        textView.setPadding(50, 30, 50, 30); // 设置合适的 padding
+        textView.setTextColor(Color.BLACK); // 设置默认文本颜色，防止渐变失效时不显示文本
+
+        // 使用 ViewTreeObserver 确保 TextView 尺寸计算完成后应用渐变效果
+        textView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            // 在 TextView 渲染完成后应用渐变
+            Shader textShader = new LinearGradient(0, 0, textView.getWidth() * 0.7f, 0,
+                    new int[]{Color.RED, Color.GREEN, Color.BLUE}, // 三色渐变：红色 -> 绿色 -> 蓝色
+                    null, Shader.TileMode.CLAMP);
+            textView.getPaint().setShader(textShader);
+        });
+        // 创建并显示退出对话框，仅使用自定义视图，而不是 setMessage
         if (quitMessage.length() > 0) {
             mQuitDialog = new AlertDialog.Builder(this, R.style.CustomAlertDialogStyle)
+                    .setView(textView)  // 将自定义 TextView 作为对话框的消息视图
                     .setPositiveButton("确定", (dialog, which) -> WebPlayerActivity.super.onBackPressed())
                     .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
-                    .setOnDismissListener(dialog -> getWindow().getDecorView().setSystemUiVisibility(mSystemUiVisibility))
-                    .setMessage(quitMessage)
                     .create();
         }
     }
